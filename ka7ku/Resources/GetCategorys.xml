@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<channels>
+<channel>
+    <id>19</id>
+    <imgUrl>/UpLoadFiles/20130409/2013040915542317.png</imgUrl>
+    <title>It健康</title>
+    <memo>健身、疾病、心理等健康信息</memo>
+</channel>
+<channel>
+    <id>20</id>
+    <imgUrl>/UpLoadFiles/20130409/2013040915564628.png</imgUrl>
+    <title>It人物</title>
+    <memo>从事IT行业的具有影响的人物介绍、以及其成功的经验历</memo>
+</channel>
+<channel>
+    <id>48</id>
+    <imgUrl>/UpLoadFiles/20130409/2013040915572389.png</imgUrl>
+    <title>It幽默</title><memo>休闲娱乐幽默的IT事、IT人、IT的幽默主角...</memo>
+</channel>
+<channel>
+    <id>50</id>
+    <imgUrl>/UpLoadFiles/20130409/2013040916040356.png</imgUrl>
+    <title>It新闻</title>
+    <memo>从新IT行业的新闻资讯内容</memo>
+</channel>
+<channel>
+    <id>56</id>
+    <imgUrl>/UpLoadFiles/20130409/2013040916043010.png</imgUrl>
+    <title>It励志</title>
+    <memo>It平凡人生、自己的奋斗、拼搏，一样精彩...</memo>
+</channel>
+<channel>
+    <id>24</id>
+    <imgUrl>/UpLoadFiles/20130409/2013040916053932.png</imgUrl>
+    <title>It产品</title>
+    <memo>产品、IT周边的最新动态和介绍...</memo>
+</channel>
+</channels>
