@@ -10,12 +10,15 @@
 #import "MBProgressHUD.h"
 #import "EGORefreshTableHeaderView.h"//下拉刷新
 
-@interface NewsViewController : UITableViewController<UISearchBarDelegate,UITableViewDelegate, UITableViewDataSource,ServiceHelperDelegate,MBProgressHUDDelegate,EGORefreshTableHeaderDelegate,UIAlertViewDelegate>
+@interface NewsViewController : UITableViewController<UITableViewDelegate, UITableViewDataSource,ServiceHelperDelegate,MBProgressHUDDelegate,EGORefreshTableHeaderDelegate,UIAlertViewDelegate>
 {
     NSArray *dataLists;
     NSMutableArray *imgLists;
     ServiceHelper *helper;
     MBProgressHUD *loadingProcess;
+    UIScrollView *_tableHeaderView;
+    NSMutableArray *_tableHeaderArray;
+    UIPageControl *_pageControl;
     EGORefreshTableHeaderView *refreshTableHeaderView;
     BOOL reloading;
 }
@@ -27,10 +30,8 @@
 @property (nonatomic, retain) MBProgressHUD *loadingProcess;
 @property (nonatomic, retain) EGORefreshTableHeaderView *refreshTableHeaderView;
 @property (nonatomic, assign) BOOL reloading;
-
-- (void)initSearchBar;
-- (void)searchBar:(UISearchBar *)searchBar activate:(BOOL) active;
-
+@property (nonatomic, retain) UIPageControl *pageControl;
+@property (nonatomic, retain) UIScrollView *tableHeaderView;
 - (void)showHUD:(NSString *)msg;
 - (void)removeHUD;
 

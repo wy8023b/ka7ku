@@ -12,7 +12,7 @@
 #import "NSString+xmldecoding.h"
 #import "NewsDetailViewController.h"
 
-@interface NewsViewController ()
+@interface NewsViewController ()<UIScrollViewDelegate>
 
 @end
 
@@ -23,14 +23,13 @@
 @synthesize helper = _helper;
 @synthesize refreshTableHeaderView=_refreshTableHeaderView;
 @synthesize reloading = _reloading;
-//@synthesize searchBar;
-
+@synthesize tableHeaderView=_tableHeaderView;
+@synthesize pageControl = _pageControl;
 - (id)initWithStyle:(UITableViewStyle)style
 {
     self = [super initWithStyle:style];
     if (self) {
         // Custom initialization
-
     }
     return self;
 }
@@ -43,11 +42,12 @@
     self.tableView.allowsSelection = YES;
     self.tableView.scrollEnabled = YES;
     self.title = @"新闻";
-    [self initRefreshHeader];
-    [self initSearchBar];
     _helper=[[ServiceHelper alloc] initWithDelegate:self];
-    [self showHUD:@"数据加载中..."];//显示动画
     [self requestXmlData];
+    [self initRefreshHeader];
+    [self initPageControl];
+    [self initImageScrollView];
+    [self showHUD:@"数据加载中..."];//显示动画
     //[self removeHUD];//移除动画
 }
 #pragma mark -
@@ -79,7 +79,6 @@
     [self.tableView reloadData];
     [self removeHUD];
 }
-
 - (void)finishFailRequest:(NSError *)error
 {
     NSLog(@"%@",error);
@@ -88,10 +87,10 @@
     [av show];
     
 }
+
 //初始化刷新区域位置
 - (void)initRefreshHeader{
     if(_refreshTableHeaderView ==nil){
-        
         EGORefreshTableHeaderView *view =[[EGORefreshTableHeaderView alloc] initWithFrame:CGRectMake(0.0f, 0.0f - self.tableView.bounds.size.height, self.view.frame.size.width, self.tableView.bounds.size.height)];
         view.delegate = self;
         [self.tableView addSubview:view];
@@ -100,6 +99,47 @@
     //  update the last update date
     [_refreshTableHeaderView refreshLastUpdatedDate];
 }
+
+//初始化PageControl
+-(void)initPageControl{
+    _pageControl = [[UIPageControl alloc] initWithFrame:CGRectMake(100, 100, 120, 20)];
+    //pageC.center = CGPointMake(160, 90);
+    _pageControl.numberOfPages = 5;
+    _pageControl.currentPageIndicatorTintColor = [UIColor whiteColor];
+    _pageControl.pageIndicatorTintColor = [UIColor blackColor];
+    _pageControl.currentPage = 0;//fabs(headerScrollView.contentOffset.x/320);
+    [self.view addSubview:_pageControl];
+    [self.view bringSubviewToFront:_pageControl];
+}
+//初始化滚动图片视图区域
+-(void)initImageScrollView
+{
+    _tableHeaderView = [[UIScrollView alloc] initWithFrame:CGRectZero];
+    [_tableHeaderView setTag:20001];
+    _tableHeaderView.delegate = self;
+    _tableHeaderView.pagingEnabled = YES;
+    _tableHeaderView.bounces = YES;
+    _tableHeaderView.userInteractionEnabled = YES;
+    _tableHeaderView.showsVerticalScrollIndicator = NO;
+    _tableHeaderView.showsHorizontalScrollIndicator = NO;
+    [self.view addSubview:_tableHeaderView];
+   // [NSTimer scheduledTimerWithTimeInterval:3 target:self selector:@selector(runTimePage) userInfo:nil repeats:YES];
+}
+
+// 定时器 绑定的方法
+- (void)runTimePage
+{
+    int page = _pageControl.currentPage; // 获取当前的page
+    page++;
+    page = page > 4 ? 0 : page;
+    _pageControl.currentPage = page;
+   // if (page == 0) {
+   //     [_tableHeaderView scrollRectToVisible:CGRectMake(0,0,320,120) animated:NO];
+   // }else{
+        [_tableHeaderView scrollRectToVisible:CGRectMake(320*(page+1),0,320,120) animated:NO];
+  //  }
+}
+
 #pragma mark Data Source Loading / Reloading Methods
 
 -(void)reloadTableViewDataSource{
@@ -122,15 +162,26 @@
 #pragma mark UIScrollViewDelegate Methods
 
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView{
-    
+    if (scrollView.tag ==20001) {
+        float contentOffsetW = scrollView.contentOffset.x;
+        NSInteger currentNum = floorf(contentOffsetW/320);
+        //if (currentNum+1==6) {
+        //    _pageControl.currentPage = 0;
+      //  [scrollView scrollRectToVisible:CGRectMake(0, 0, 320, 120) animated:YES];
+       // }else
+       // {
+            _pageControl.currentPage = currentNum;
+       // }
+    }
+    else{
     [_refreshTableHeaderView egoRefreshScrollViewDidScroll:scrollView];
-    
+    }
 }
 
 -(void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
-    
-    [_refreshTableHeaderView egoRefreshScrollViewDidEndDragging:scrollView];
-    
+    if (scrollView.tag!=20001) {
+        [_refreshTableHeaderView egoRefreshScrollViewDidEndDragging:scrollView];
+    }
 }
 
 #pragma mark -
@@ -316,122 +367,6 @@
 }
 
 #pragma mark -
-#pragma mark SearchBar Method
-
-- (void)initSearchBar
-{
-    UISearchBar *searchBar = [[UISearchBar alloc] initWithFrame: CGRectMake(0.0, 0.0, self.view.bounds.size.width, 40)];
-    searchBar.placeholder=@"Enter Name";
-    searchBar.delegate = self;
-    self.tableView.tableHeaderView = searchBar;
-    searchBar.keyboardType = UIKeyboardTypeDefault;
-    searchBar.autocorrectionType = UITextAutocorrectionTypeNo;
-    searchBar.autocapitalizationType = UITextAutocapitalizationTypeNone;
-    [self.view addSubview:searchBar];
-    /*用于修改serachBar的背景图片
-    UIImage *img = [[UIImage imageNamed: @"searchBar_bg.png"]stretchableImageWithLeftCapWidth:0 topCapHeight:22];
-    UIImageView *v = [[[UIImageView alloc] initWithFrame:CGRectZero] autorelease];
-    [v setImage:img];
-    v.bounds = CGRectMake(0, 0, searchbar.frame.size.width, searchbar.frame.size.height);
-    
-    NSArray *subs = searchbar.subviews;
-    for (int i = 0; i < [subs count]; i++) {
-        id subv = [searchbar.subviews objectAtIndex:i];
-        if ([subv isKindOfClass:NSClassFromString(@"UISearchBarBackground")])
-        {
-            CGRect viewRect = [subv frame];
-            [v setFrame:viewRect];
-            [searchbar insertSubview:v atIndex:i];
-        }
-    }
-     */
-}
-/*开始输入检索关键字*/
-- (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar{
-    searchBar.showsCancelButton = YES;
-    for(id cc in [searchBar subviews])
-    {
-        if([cc isKindOfClass:[UIButton class]])
-        {
-            UIButton *sbtn = (UIButton *)cc;
-            [sbtn setTitle:@"取消"  forState:UIControlStateNormal];
-            //[sbtn setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
-        }
-    }
-    self.tableView.allowsSelection = NO;
-    self.tableView.scrollEnabled = NO;
-    [self searchBar:searchBar activate:YES];
-}
-
-/*输入检索关键字结束*/
--(void)searchBarTextDidEndEditing:(UISearchBar *)searchBar{
-    self.tableView.allowsSelection = YES;
-    self.tableView.scrollEnabled = YES;
-}
-
-/*取消按钮*/
-- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar{
-    searchBar.text=@"";
-    self.tableView.allowsSelection = YES;
-    self.tableView.scrollEnabled = YES;
-    [self searchBar:searchBar activate:NO];
-    
-}
-
-- (void)searchBar:(UISearchBar *)searchBar
-    textDidChange:(NSString *)searchText {
-    // We don't want to do anything until the user clicks
-    // the 'Search' button.
-    // If you wanted to display results as the user types
-    // you would do that here.
-}
-/*键盘搜索按钮*/
-- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
-    // Do the search and show the results in tableview
-    // Deactivate the UISearchBar
-    
-    // You'll probably want to do this on another thread
-    // SomeService is just a dummy class representing some
-    // api that you are using to do the search
-    //数据查询处理
-    //NSArray *results = [SomeService doSearch:searchBar.text];
-    
-    //[self searchBar:searchBar activate:NO];
-    
-    //[self.tableData removeAllObjects];
-    //[self.tableData addObjectsFromArray:results];
-    //[self.tableView reloadData];
-    [self doSearch:searchBar];
-}
-//搜索遮蔽特效
-- (void)searchBar:(UISearchBar *)searchBar activate:(BOOL) active{
-    if (!active) {
-        [self.disableViewOverlay removeFromSuperview];
-        [searchBar resignFirstResponder];
-    } else {
-        self.disableViewOverlay = [[UIView alloc]
-                                   initWithFrame:CGRectMake(0.0f,40.0f,320.0f,416.0f)];
-        self.disableViewOverlay.backgroundColor=[UIColor blackColor];
-        self.disableViewOverlay.alpha = 0;
-        [self.view addSubview:self.disableViewOverlay];
-        
-        [UIView beginAnimations:@"FadeIn" context:nil];
-        [UIView setAnimationDuration:0.5];
-        self.disableViewOverlay.alpha = 0.6;
-        [UIView commitAnimations];
-    }
-    [searchBar setShowsCancelButton:active animated:YES];
-}
-
-/*搜索*/
-- (void)doSearch:(UISearchBar *)searchBar{
-    //...
-    UIAlertView *alert =[[UIAlertView alloc] initWithTitle:@"信息查询" message:@"抱歉，查询功能尚未开通！谢谢！" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"好", nil];
-    [alert show];
-    
-}
-
-#pragma mark -
 #pragma mark Table Data Source Methods
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return [self.dataLists count];
@@ -446,7 +381,6 @@
         [tableView registerNib:nib forCellReuseIdentifier:CustomCellIdentifier];
         nibsRegistered = YES;
     }
-    
     CustomCell *cell = [tableView dequeueReusableCellWithIdentifier:CustomCellIdentifier];
     CGSize labelSize = [cell.contentLabel.text
                         sizeWithFont:[UIFont systemFontOfSize:12]
@@ -504,6 +438,37 @@
 accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath
 {
     [self tableView:tableView didSelectRowAtIndexPath:indexPath];
+}
+ 
+-(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
+        _tableHeaderArray = [[NSMutableArray alloc] initWithCapacity:5];
+        NSString *fliePath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+        for (int i=0; i<5; i++) {
+            NSString *imgURL = [self.imgLists objectAtIndex:i];
+            NSString *fileName = [[imgURL lastPathComponent] stringByDeletingPathExtension];
+            NSString *extension = [imgURL pathExtension];
+            NSString *imageStr = [NSString stringWithFormat:@"%@/%@.%@", fliePath, fileName, extension];
+            [_tableHeaderArray addObject:imageStr];
+        }
+    [_tableHeaderView setFrame:CGRectMake(0, 0, 320,120)];
+    [_tableHeaderView setContentSize:CGSizeMake(320*_tableHeaderArray.count, 120)];
+    for (int i=0; i<_tableHeaderArray.count; i++) {
+        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(320*i, 0, 320, 120)];
+        UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfFile:[_tableHeaderArray objectAtIndex:i]]];
+        imageView.image = image;
+        [_tableHeaderView addSubview:imageView];
+    }
+    return _tableHeaderView;
+     /*
+    UIViewController *vc = [[UIViewController alloc] init];
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 320, 100)];
+    label.text = @"I am header";
+    [vc.view addSubview:label];
+    return vc.view;*/
+}
+-(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    return 120;
 }
 /*
 // Override to support conditional editing of the table view.

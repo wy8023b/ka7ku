@@ -21,7 +21,6 @@
 		184F7B2A1747968F006D3496 /* CategoryDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 184F7B1C1747968F006D3496 /* CategoryDetailViewController.m */; };
 		184F7B2B1747968F006D3496 /* CategoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 184F7B1E1747968F006D3496 /* CategoryViewController.m */; };
 		184F7B2C1747968F006D3496 /* CustomCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 184F7B201747968F006D3496 /* CustomCell.m */; };
-		184F7B2D1747968F006D3496 /* ka7ku.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 184F7B211747968F006D3496 /* ka7ku.xcdatamodeld */; };
 		184F7B2E1747968F006D3496 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 184F7B241747968F006D3496 /* MainViewController.m */; };
 		184F7B2F1747968F006D3496 /* NewsDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 184F7B261747968F006D3496 /* NewsDetailViewController.m */; };
 		184F7B301747968F006D3496 /* NewsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 184F7B281747968F006D3496 /* NewsViewController.m */; };
@@ -149,7 +148,6 @@
 		184F7B1E1747968F006D3496 /* CategoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryViewController.m; sourceTree = "<group>"; };
 		184F7B1F1747968F006D3496 /* CustomCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomCell.h; sourceTree = "<group>"; };
 		184F7B201747968F006D3496 /* CustomCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomCell.m; sourceTree = "<group>"; };
-		184F7B221747968F006D3496 /* ka7ku.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ka7ku.xcdatamodel; sourceTree = "<group>"; };
 		184F7B231747968F006D3496 /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
 		184F7B241747968F006D3496 /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
 		184F7B251747968F006D3496 /* NewsDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewsDetailViewController.h; sourceTree = "<group>"; };
@@ -395,7 +393,6 @@
 				184F7B1E1747968F006D3496 /* CategoryViewController.m */,
 				184F7B1F1747968F006D3496 /* CustomCell.h */,
 				184F7B201747968F006D3496 /* CustomCell.m */,
-				184F7B211747968F006D3496 /* ka7ku.xcdatamodeld */,
 				184F7B231747968F006D3496 /* MainViewController.h */,
 				184F7B241747968F006D3496 /* MainViewController.m */,
 				184F7B251747968F006D3496 /* NewsDetailViewController.h */,
@@ -789,7 +786,6 @@
 				184F7B2A1747968F006D3496 /* CategoryDetailViewController.m in Sources */,
 				184F7B2B1747968F006D3496 /* CategoryViewController.m in Sources */,
 				184F7B2C1747968F006D3496 /* CustomCell.m in Sources */,
-				184F7B2D1747968F006D3496 /* ka7ku.xcdatamodeld in Sources */,
 				184F7B2E1747968F006D3496 /* MainViewController.m in Sources */,
 				184F7B2F1747968F006D3496 /* NewsDetailViewController.m in Sources */,
 				184F7B301747968F006D3496 /* NewsViewController.m in Sources */,
@@ -975,16 +971,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
-		184F7B211747968F006D3496 /* ka7ku.xcdatamodeld */ = {
-			isa = XCVersionGroup;
-			children = (
-				184F7B221747968F006D3496 /* ka7ku.xcdatamodel */,
-			);
-			currentVersion = 184F7B221747968F006D3496 /* ka7ku.xcdatamodel */;
-			path = ka7ku.xcdatamodeld;
-			sourceTree = "<group>";
-			versionGroupType = wrapper.xcdatamodel;
-		};
 		184F7C7E17490996006D3496 /* ka7ku.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
