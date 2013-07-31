@@ -45,6 +45,12 @@
     NSMutableArray *controllers = [[NSMutableArray alloc] initWithObjects:navigationController1,navigationController2,self.tabBar3,nil];
     //NSMutableArray *controllers = @[tabBar1,tabBar2,tabBar3];
     self.viewControllers = controllers;
+    UISwipeGestureRecognizer *swipLeft = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handSwipeSwitch:)];
+    [swipLeft setDirection:UISwipeGestureRecognizerDirectionLeft];
+    UISwipeGestureRecognizer *swipRight = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handSwipeSwitch:)];
+    [swipRight setDirection:UISwipeGestureRecognizerDirectionRight];
+    [self.view addGestureRecognizer:swipLeft];
+    [self.view addGestureRecognizer:swipRight];
 	// Do any additional setup after loading the view.
 }
 
@@ -56,10 +62,25 @@
 
 #pragma tabbar delegate
 - (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController{
-    //  [self.view addSubview:viewController.view];
-    //  tabBarController.selectedViewController = viewController;
     viewController.tabBarItem.badgeValue = [NSString stringWithFormat:@"%d",80];
-    //  viewController.tabBarItem.title = @"aaa";
 }
-
+#pragma mark -
+#pragma mark gesture methods
+-(void)handSwipeSwitch:(UISwipeGestureRecognizer *)swipeGesture
+{
+    NSUInteger currentTab =self.selectedIndex;
+    if (swipeGesture.direction == UISwipeGestureRecognizerDirectionLeft) {
+        if (currentTab+1 ==self.viewControllers.count) {
+            return;
+        }else{
+            self.selectedIndex = ++currentTab;
+        }
+    }else{
+        if (currentTab == 0) {
+            return ;
+        }else{
+            self.selectedViewController = [self.viewControllers objectAtIndex:--currentTab];
+        }
+    }
+}
 @end

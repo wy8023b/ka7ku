@@ -374,7 +374,6 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *CustomCellIdentifier = @"CustomCellIdentifier";
-    
     static BOOL nibsRegistered = NO;
     if (!nibsRegistered) {
         UINib *nib = [UINib nibWithNibName:@"CustomCell" bundle:nil];
@@ -382,6 +381,7 @@
         nibsRegistered = YES;
     }
     CustomCell *cell = [tableView dequeueReusableCellWithIdentifier:CustomCellIdentifier];
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     CGSize labelSize = [cell.contentLabel.text
                         sizeWithFont:[UIFont systemFontOfSize:12]
                                    constrainedToSize:CGSizeMake(160, 45)
@@ -422,7 +422,7 @@
 //}
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    //[tableView deselectRowAtIndexPath:indexPath animated:YES];
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
     NSUInteger section = [indexPath section];
     if (section==0) {
         NSUInteger row = [indexPath row];
@@ -430,7 +430,6 @@
             NewsDetailViewController *detailView = [[NewsDetailViewController alloc] initWithNibName:@"NewsDetail" bundle:[NSBundle mainBundle]];
             detailView.articleId = [rowData objectForKey:@"id"];
             [self.navigationController pushViewController: detailView animated:YES];
-        
     }  
 }
 
@@ -453,10 +452,12 @@ accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath
     [_tableHeaderView setFrame:CGRectMake(0, 0, 320,120)];
     [_tableHeaderView setContentSize:CGSizeMake(320*_tableHeaderArray.count, 120)];
     for (int i=0; i<_tableHeaderArray.count; i++) {
-        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(320*i, 0, 320, 120)];
+        UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+        btn.frame = CGRectMake(320*i, 0, 320, 120);
         UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfFile:[_tableHeaderArray objectAtIndex:i]]];
-        imageView.image = image;
-        [_tableHeaderView addSubview:imageView];
+        [btn setBackgroundImage:image forState:UIControlStateNormal];
+        [btn addTarget:self action:@selector(headerScrollTouchUpInside:) forControlEvents:UIControlEventTouchUpInside];
+        [_tableHeaderView addSubview:btn];
     }
     return _tableHeaderView;
      /*
@@ -469,6 +470,14 @@ accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
     return 120;
+}
+
+-(void)headerScrollTouchUpInside:(id)sender
+{
+    NSDictionary *rowData = [self.dataLists objectAtIndex:_pageControl.currentPage];
+    NewsDetailViewController *detailView = [[NewsDetailViewController alloc] initWithNibName:@"NewsDetail" bundle:[NSBundle mainBundle]];
+    detailView.articleId = [rowData objectForKey:@"id"];
+    [self.navigationController pushViewController: detailView animated:YES];
 }
 /*
 // Override to support conditional editing of the table view.

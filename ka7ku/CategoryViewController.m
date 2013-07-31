@@ -265,7 +265,7 @@
     [CategoryCell addSubview:labelTitle];
     [CategoryCell addSubview:labelContent];
     [CategoryCell addSubview:img];
-
+    CategoryCell.selectionStyle = UITableViewCellSelectionStyleNone;
     CategoryCell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
     return CategoryCell;
 }
@@ -285,7 +285,8 @@
 //}
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    //[tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
     NSUInteger section = [indexPath section];
     if (section==0) {
         NSUInteger row = [indexPath row];
@@ -294,7 +295,6 @@
         detailView.catogeryId = [rowData objectForKey:@"id"];
         detailView.catogeryName =[rowData objectForKey:@"title"];
         [self.navigationController pushViewController: detailView animated:YES];
-        //[detailView initWithContentId:[rowData objectForKey:@"id"]];
     }
 }
 
